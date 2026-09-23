@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+
+# Local development files
+*.log
+uploads/
