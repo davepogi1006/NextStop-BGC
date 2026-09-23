@@ -28,11 +28,13 @@ curl_setopt_array($tokenRequest, [
     CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
 ]);
 $tokenResponse = curl_exec($tokenRequest);
+$tokenCurlError = curl_error($tokenRequest);
 curl_close($tokenRequest);
 $token = json_decode($tokenResponse ?: '', true);
 
 if (empty($token['access_token'])) {
-    die('Google login could not be completed.');
+    $details = $token['error_description'] ?? $token['error'] ?? $tokenCurlError;
+    die('Google login could not be completed.' . ($details ? ' ' . htmlspecialchars($details, ENT_QUOTES, 'UTF-8') : ''));
 }
 
 $profileRequest = curl_init('https://www.googleapis.com/oauth2/v3/userinfo');
